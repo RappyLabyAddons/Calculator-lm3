@@ -3,6 +3,11 @@ package com.rappytv.calc.event;
 import com.rappytv.calc.Calculator;
 import net.labymod.api.events.MessageSendEvent;
 import net.labymod.utils.ModColor;
+import scala.actors.Eval;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 public class ChatEvent implements MessageSendEvent {
 
@@ -11,42 +16,38 @@ public class ChatEvent implements MessageSendEvent {
         String[] args = s.split(" ");
 
         if(args[0].equalsIgnoreCase("/" + Calculator.cmd)) {
-            if(args.length != 4) {
-                Calculator.get().getApi().displayMessageInChat(Calculator.prefix + ModColor.RED + "Usage: /" + Calculator.cmd + " <Number> <Operator> <Number>");
+            if(args.length < 2) {
+                Calculator.get().getApi().displayMessageInChat("\u00A78\u00bb\n" + Calculator.prefix + ModColor.RED + "Usage: /" + Calculator.cmd + " <Operation>\n\u00A78\u00bb");
                 return true;
             }
-            String operation = args[2];
-            float number1;
-            float number2;
+            StringBuilder operation = new StringBuilder();
+            for(int i = 1; i < args.length; i++) {
+                operation.append(args[i]);
+            }
 
             try {
-                number1 = Float.parseFloat(args[1]);
-                number2 = Float.parseFloat(args[3]);
-            } catch (NumberFormatException e) {
-                Calculator.get().getApi().displayMessageInChat(Calculator.prefix + ModColor.RED + "On of your provided numbers is invalid!");
-                return true;
+                Calculator.get().getApi().displayMessageInChat("\u00A78\u00bb\n" + Calculator.prefix + ModColor.GREEN + operation + " = " + formatNumber(calculation(operation.toString())) + "\n\u00A78\u00bb");
+            } catch (ScriptException e) {
+                Calculator.get().getApi().displayMessageInChat("\u00A78\u00bb\n" + Calculator.prefix + ModColor.RED + "Invalid operation!" + "\n\u00A78\u00bb");
             }
-            if(!operation.equalsIgnoreCase("+") && !operation.equalsIgnoreCase("-") && !operation.equalsIgnoreCase("*") && !operation.equalsIgnoreCase("/")) {
-                Calculator.get().getApi().displayMessageInChat(Calculator.prefix + ModColor.RED + "Invalid Operator! Valid operators are +, -, *, /");
-                return true;
-            }
-            Calculator.get().getApi().displayMessageInChat(Calculator.prefix + ModColor.GREEN + formatNumber(number1) + " " + operation + " " + formatNumber(number2) + " = " + formatNumber(calculation(operation, number1, number2)));
             return true;
         } else return false;
     }
 
-    public static float calculation(String operation, float num1, float num2) {
-        switch (operation) {
-            case "+":
-                return num1 + num2;
-            case "-":
-                return num1 - num2;
-            case "*":
-                return num1 * num2;
-            case "/":
-                return num1 / num2;
-            default:
-                return 0;
+    public static float calculation(String operation) throws ScriptException {
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("js");
+        Object num = engine.eval(operation);
+
+        if(num instanceof Float) {
+            return (float) num;
+        } else if(num instanceof Integer) {
+            return (int) num;
+        } else if(num instanceof Double) {
+            double doubleNumber = (double) num;
+            return (float) doubleNumber;
+        } else {
+            return 0;
         }
     }
 

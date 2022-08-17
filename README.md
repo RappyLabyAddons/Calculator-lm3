@@ -4,7 +4,7 @@
 ### Installation
 1. Press `Win` + `R`
 2. Paste this into the window that popped up: `%appdata%/.minecraft/LabyMod/addons-1.12` and press enter
-3. It should open your Labymod addon directory; Paste the [Calculator.jar](https://github.com/RappyLabyAddons/Calculator/releases/download/1.0.0/Calculator.jar) in there.
+3. It should open your Labymod addon directory; Paste the [Calculator.jar](https://github.com/RappyLabyAddons/Calculator/releases/download/1.0.1/Calculator.jar) in there.
 4. Launch your Labymod client.
 
 ### Config

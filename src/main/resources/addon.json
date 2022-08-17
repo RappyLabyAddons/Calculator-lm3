@@ -3,7 +3,7 @@
   "name": "Calculator",
   "mainClass": "com.rappytv.calc.Calculator",
   "description": "This addon lets you calculate simple things through your chat.",
-  "version": 1,
+  "version": 2,
   "author": "RappyTV#6969",
   "category": 2,
   "icon": "https://cdn.discordapp.com/attachments/938944740920016916/1009237495256453261/icon.png"
