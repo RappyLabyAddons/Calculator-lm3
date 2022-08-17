@@ -27,7 +27,7 @@ public class ChatEvent implements MessageSendEvent {
 
             try {
                 Calculator.get().getApi().displayMessageInChat("\u00A78\u00bb\n" + Calculator.prefix + ModColor.GREEN + operation + " = " + formatNumber(calculation(operation.toString())) + "\n\u00A78\u00bb");
-            } catch (ScriptException e) {
+            } catch (Exception e) {
                 Calculator.get().getApi().displayMessageInChat("\u00A78\u00bb\n" + Calculator.prefix + ModColor.RED + "Invalid operation!" + "\n\u00A78\u00bb");
             }
             return true;
@@ -37,7 +37,14 @@ public class ChatEvent implements MessageSendEvent {
     public static float calculation(String operation) throws ScriptException {
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName("js");
-        Object num = engine.eval(operation);
+        Object num = null;
+        
+        try {
+            num = engine.eval(operation);
+        } catch (Exception e) {
+            Calculator.get().getApi().displayMessageInChat("\u00A78\u00bb\n" + Calculator.prefix + ModColor.RED + "Invalid operation!" + "\n\u00A78\u00bb");
+            return 0;
+        }
 
         if(num instanceof Float) {
             return (float) num;
